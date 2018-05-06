@@ -1,9 +1,11 @@
 package service
 
 import (
+	"encoding/json"
+	//"fmt"
     "net/http"
     "strconv"
-    //"fmt"
+    "fmt"
     "github.com/MBControlGroup/login/entities"
     "github.com/MBControlGroup/login/token"
     "github.com/unrolled/render"
@@ -14,21 +16,24 @@ import (
 
 func signinHandler(formatter *render.Render) http.HandlerFunc {
     return func(w http.ResponseWriter, req *http.Request) {
-        req.ParseForm()
-        if len(req.Form["account"]) == 0 {
-            formatter.JSON(w, http.StatusBadRequest, struct{ success bool }{false})
-            return
-        }
-        u := entities.LoginService.AdminFindByAccount(req.Form["account"][0])
+        var user entities.UserInfo
+        
+        err := json.NewDecoder(req.Body).Decode(&user)
+        fmt.Println(user)
+        checkErr(err)
+
+        u := entities.LoginService.AdminFindByAccount(user.Username)
         //u := entities.NewUserInfo(entities.UserInfo{UserName: req.Form["username"][0]})
         
-        if u.Admin_password != req.Form["password"][0] {
+        if u.Admin_password != user.Password {
             formatter.JSON(w, http.StatusBadRequest, struct{ success bool}{false})
         } else {
             //fmt.Println(u.Admin_id)
             tokenString, err := token.Generate(u.Admin_id)
+            cookie := http.Cookie{Name:"token", Value:tokenString, Path:"/", MaxAge:86400}
+            http.SetCookie(w, &cookie)
             checkErr(err)
-            formatter.JSON(w, http.StatusOK, struct{Token string}{tokenString})
+            formatter.JSON(w, http.StatusOK, struct{ success bool}{true})
         }
     }
 }

@@ -2,6 +2,7 @@ FROM golang:1.8
 
 RUN mkdir /data
 COPY . "$GOPATH/src/github.com/MBControlGroup/login/"
+COPY . "$GOPATH/src/github.com/spf13/pflag/"
 RUN cd "$GOPATH/src/github.com/MBControlGroup/login/service" && go get -v && go install -v
 RUN cd "$GOPATH/src/github.com/MBControlGroup/login/entities" && go get -v && go install -v
 RUN cd "$GOPATH/src/github.com/MBControlGroup/login/token" && go get -v && go install -v

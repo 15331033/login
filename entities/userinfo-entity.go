@@ -7,10 +7,8 @@ import (
 
 // UserInfo .
 type UserInfo struct {
-    UID        int   `xorm:"pk autoincr 'id'"` //语义标签
-    UserName   string
-    DepartName string
-    CreateAt   *time.Time   `xorm:"created"`
+    Username    string  `json:"username"`
+    Password    string  `json:"password"`
 }
 
 type Admin struct {
@@ -92,9 +90,7 @@ type CmNtReceipts struct {
 }
 
 func init() {
-    err := engine.Sync2(new(UserInfo))
-    checkErr(err)
-    err = engine.Sync2(new(Task))
+    err := engine.Sync2(new(Task))
     checkErr(err)
     err = engine.Sync2(new(Admin))
     checkErr(err)
