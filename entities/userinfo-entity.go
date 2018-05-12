@@ -2,20 +2,24 @@ package entities
 
 import (
     "time"
-    "fmt"
 )
 
+const (
+    OF = iota
+    OR
+)
 // UserInfo .
 type UserInfo struct {
     Username    string  `json:"username"`
     Password    string  `json:"password"`
 }
 
-type Admin struct {
+type Admins struct {
     Admin_id        int   `xorm:"pk autoincr 'id'"` //语义标签
     Admin_account   string    `xorm:"unique"`
-    Admin_password  string
-    Admin_type      string
+    Admin_passwd    string
+    Admin_type      int
+    Im_user_id      int
 }
 
 type Soldiers struct {
@@ -89,27 +93,4 @@ type CmNtReceipts struct {
     Rec_content     string
 }
 
-func init() {
-    err := engine.Sync2(new(Task))
-    checkErr(err)
-    err = engine.Sync2(new(Admin))
-    checkErr(err)
-    err = engine.Sync2(new(Soldiers))
-    checkErr(err)
-    err = engine.Sync2(new(BroadcastMessages))
-    checkErr(err)
-    err = engine.Sync2(new(BcMsgOrgs))
-    checkErr(err)
-    err = engine.Sync2(new(BcMsgOffices))
-    checkErr(err)
-    err = engine.Sync2(new(Organizations))
-    checkErr(err)
-    err = engine.Sync2(new(Offices))
-    checkErr(err)
-    err = engine.Sync2(new(CommonNotifications))
-    checkErr(err)
-    err = engine.Sync2(new(CmNtReceipts))
-    checkErr(err)
-    fmt.Println("111")
-}
 

@@ -25,30 +25,38 @@ func signinHandler(formatter *render.Render) http.HandlerFunc {
         u := entities.LoginService.AdminFindByAccount(user.Username)
         //u := entities.NewUserInfo(entities.UserInfo{UserName: req.Form["username"][0]})
         
-        if u.Admin_password != user.Password {
-            formatter.JSON(w, http.StatusBadRequest, struct{ success bool}{false})
+        if u.Admin_passwd != user.Password {
+            formatter.JSON(w, http.StatusBadRequest, struct{ Success bool}{false})
         } else {
             //fmt.Println(u.Admin_id)
             tokenString, err := token.Generate(u.Admin_id)
             cookie := http.Cookie{Name:"token", Value:tokenString, Path:"/", MaxAge:86400}
             http.SetCookie(w, &cookie)
             checkErr(err)
-            formatter.JSON(w, http.StatusOK, struct{ success bool}{true})
+            formatter.JSON(w, http.StatusOK, struct{ Success bool}{true})
         }
     }
-}
+} 
 
 func addAdminHandler(formatter *render.Render) http.HandlerFunc {
     return func(w http.ResponseWriter, req *http.Request) {
+        fmt.Println(123)
         req.ParseForm()
-        var admin entities.Admin
-        admin.Admin_password = req.Form["admin_password"][0]
+        var admin entities.Admins
+        //fmt.Println(req.Form["admin_password"][0])
+        fmt.Println(123)
+        admin.Admin_passwd = req.Form["admin_password"][0]
         admin.Admin_account = req.Form["admin_account"][0]
-        admin.Admin_type = req.Form["admin_type"][0]
+        admin_type, err := strconv.Atoi(req.Form["admin_type"][0])
+        checkErr(err)
+        admin.Admin_type = admin_type
+        admin_Im_user_id, err := strconv.Atoi(req.Form["admin_im_user_id"][0])
+        admin.Im_user_id = admin_Im_user_id
+        fmt.Println(admin)
         entities.LoginService.AdminSave(&admin)
     }
 }
-
+ 
 func testToken(formatter *render.Render) http.HandlerFunc {
     return func(w http.ResponseWriter, req *http.Request) {
 
@@ -72,7 +80,7 @@ func testToken(formatter *render.Render) http.HandlerFunc {
         formatter.JSON(w, http.StatusOK, 
             struct{ Success bool;
                     Content string;
-                    AdminInfo entities.Admin}{
+                    AdminInfo entities.Admins}{
                     true, 
                     "The token is valid.",
                     *admin})

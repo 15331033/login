@@ -17,7 +17,7 @@ func init() {
     //}
     //mydb = db
 
-    en, err := xorm.NewEngine("mysql", "root:root@tcp(127.0.0.1:3306)/test?charset=utf8&parseTime=true")
+    en, err := xorm.NewEngine("mysql", "mbcsdev:mbcsdev2018@(222.200.180.59:9000)/MBDB?charset=utf8")
     //tx, err := mydb.Begin()
     checkErr(err)
     engine = en

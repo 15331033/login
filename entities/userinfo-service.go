@@ -7,28 +7,30 @@ type LoginAtomicService struct{}
 var LoginService = LoginAtomicService{}
 
 
-func (*LoginAtomicService) AdminFindByAccount(account string) *Admin {
+func (*LoginAtomicService) AdminFindByAccount(account string) *Admins {
     //dao := userInfoDao{mydb}
-    var admin Admin
+    var admin Admins
     admin.Admin_account = account
     _, err := engine.Get(&admin)
     checkErr(err)
     return &admin//dao.FindByID(id)
 }
 
-func (*LoginAtomicService) AdminFindById(id int) *Admin {
+func (*LoginAtomicService) AdminFindById(id int) *Admins {
     //dao := userInfoDao{mydb}
-    var admin Admin
+    var admin Admins
     admin.Admin_id = id
     _, err := engine.Get(&admin)
     checkErr(err)
     return &admin//dao.FindByID(id)
 }
 
-func (*LoginAtomicService) AdminSave(a *Admin) error {
-    engine.Insert(a)
-
-    return nil
+func (*LoginAtomicService) AdminSave(a *Admins) error {
+    sql := "select * form Admins where Admins.admin_id = ?"
+    var admin Admins
+    err := engine.SQL(sql, officd_id).Find(soldiers) 
+    checkErr(err)
+    return soldiers
 }
 
 func (*LoginAtomicService) SoldierSave(s *Soldiers) error {
